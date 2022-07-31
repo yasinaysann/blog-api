@@ -1,0 +1,24 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create-target: create.sql
+
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/post-api
+    username: postgres
+    password: 2468
