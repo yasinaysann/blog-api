@@ -1,13 +1,19 @@
 package com.yasin.blogapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 // todo: solved
 @Entity
-public class Tag {
+public class Tag implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,16 +21,17 @@ public class Tag {
     @Column(nullable = false,unique = true)
     private String name;
     //fetch = FetchType.EAGER,cascade = CascadeType.MERGE
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Post> post = new ArrayList<>();
+    @ManyToMany(mappedBy = "tags")
+    private Set<Post> posts = new HashSet<>();
 
     protected Tag(){
 
     }
 
-    public Tag(Long id, String name){
+    public Tag(Long id, String name, Set<Post> posts){
         this.id = id;
         this.name = name;
+        this.posts = posts;
     }
 
 
@@ -44,11 +51,13 @@ public class Tag {
         this.name = name;
     }
 
-    public List<Post> getPost() {
-        return post;
+    public Set<Post> getPosts() {
+        return posts;
     }
 
-    public void setPost(List<Post> post) {
-        this.post = post;
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
+
+
 }

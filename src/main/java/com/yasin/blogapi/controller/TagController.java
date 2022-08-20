@@ -4,6 +4,7 @@ import com.yasin.blogapi.entity.Tag;
 import com.yasin.blogapi.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/tag")
+@RequestMapping(value = "/tag")
 public class TagController {
     @Autowired
     private final TagRepository tagRepository;

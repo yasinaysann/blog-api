@@ -1,6 +1,8 @@
 package com.yasin.blogapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
@@ -22,7 +24,7 @@ public class Category implements Serializable{
     @Column(nullable = false,unique = true)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category")
     private List<Post> posts = new ArrayList<>();
 
     protected Category(){
@@ -33,11 +35,15 @@ public class Category implements Serializable{
         this.name = name;
     }
 
-    public Category(Long id, String name){
+    public Category(Long id, String name, Post post){
         this(name);
         this.id = id;
+        addToList(post);
     }
 
+    private void addToList(Post post){
+        posts.add(post);
+    }
 
     public Long getId() {
         return id;

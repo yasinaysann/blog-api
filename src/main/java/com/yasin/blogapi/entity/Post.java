@@ -1,23 +1,22 @@
 package com.yasin.blogapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Proxy;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-public class Post{
-
+public class Post implements Serializable{
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,14 +26,15 @@ public class Post{
     private String body;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "category_id")
-    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JoinColumn(name = "category_post_id")
+    @JsonBackReference(value = "post-category")
     private Category category;
 
-
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.MERGE)
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private List<Tag> tag = new ArrayList<>();
+    @JsonBackReference(value = "post-tag")
+    private Set<Tag> tags;
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -50,15 +50,24 @@ public class Post{
 
     }
 
-    public Post(Long id, String title, String body, Category category, List<Tag> tags, Comment comment) {
+    public Post(Long id, String title, String body, Comment comment) {
         this.id = id;
         this.title = title;
         this.body = body;
-        this.category = category;
-        this.tag = tags;
         this.comments.add(comment);
     }
+    public void addTag(Tag tag){
+        this.tags.add(tag);
+        tag.getPosts().add(this);
+    }
 
+    public void removeTag(Long tagId){
+        Tag tag = this.tags.stream().filter(tag1 -> tag1.getId() == tagId).findFirst().orElse(null);
+        if (tag != null){
+            this.tags.remove(tag);
+            tag.getPosts().remove(this);
+        }
+    }
     public Long getId() {
         return id;
     }
@@ -71,12 +80,9 @@ public class Post{
         return body;
     }
 
-    public Category getCategory() {
-        return category;
-    }
 
-    public List<Tag> getTag() {
-        return tag;
+    public Set<Tag> getTags() {
+        return tags;
     }
 
     public Set<Comment> getComments() {
@@ -95,11 +101,29 @@ public class Post{
         this.body = body;
     }
 
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
     public void setCategory(Category category) {
         this.category = category;
     }
 
-    public void setTag(List<Tag> tag) {
-        this.tag = tag;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return Objects.equals(id, post.id) && Objects.equals(title, post.title) && Objects.equals(body, post.body) && Objects.equals(category, post.category) && Objects.equals(tags, post.tags) && Objects.equals(comments, post.comments) && Objects.equals(createdAt, post.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, body, category, tags, comments, createdAt);
     }
 }
