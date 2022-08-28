@@ -56,18 +56,18 @@ public class Post implements Serializable{
         this.body = body;
         this.comments.add(comment);
     }
-    public void addTag(Tag tag){
-        this.tags.add(tag);
-        tag.getPosts().add(this);
-    }
-
-    public void removeTag(Long tagId){
-        Tag tag = this.tags.stream().filter(tag1 -> tag1.getId() == tagId).findFirst().orElse(null);
-        if (tag != null){
-            this.tags.remove(tag);
-            tag.getPosts().remove(this);
-        }
-    }
+//    public void addTag(Tag tag){
+//        this.tags.add(tag);
+//        tag.getPosts().add(this);
+//    }
+//
+//    public void removeTag(Long tagId){
+//        Tag tag = this.tags.stream().filter(tag1 -> tag1.getId() == tagId).findFirst().orElse(null);
+//        if (tag != null){
+//            this.tags.remove(tag);
+//            tag.getPosts().remove(this);
+//        }
+//    }
     public Long getId() {
         return id;
     }
