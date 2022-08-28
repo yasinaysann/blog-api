@@ -50,11 +50,11 @@ public class Post implements Serializable{
 
     }
 
-    public Post(Long id, String title, String body, Comment comment) {
+    public Post(Long id, String title, String body) {
         this.id = id;
         this.title = title;
         this.body = body;
-        this.comments.add(comment);
+
     }
 //    public void addTag(Tag tag){
 //        this.tags.add(tag);

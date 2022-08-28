@@ -31,7 +31,6 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Post is Not Found"));
         post.getComments().add(comment);
         return postRepository.save(post);
-
     }
 
     public Post getPostById(Long id){

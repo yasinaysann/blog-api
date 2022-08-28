@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping(value = "/tag")
 public class TagController {
-    @Autowired
+
     private final TagRepository tagRepository;
 
     public TagController(TagRepository tagRepository) {
