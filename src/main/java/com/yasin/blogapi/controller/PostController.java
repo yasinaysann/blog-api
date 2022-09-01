@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,12 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable Long id){
         return ResponseEntity.ok(postService.getPostById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Post> updatePostById(@PathVariable Long id,@Valid @RequestBody Post post){
+        Post updatedPost = postService.updatePost(id,post);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
 

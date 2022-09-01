@@ -8,8 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -39,21 +42,21 @@ public class PostService {
 
 
     public List<Post> getAllPost(){
-        return  postRepository.findAll()
-                .stream()
-                .sorted().toList();
+        return  postRepository.findAll();
     }
 
-    public void updatePost(Post post){
+    @Transactional
+    public Post updatePost(Long id,Post post){
         if (post == null) {
             throw new NoSuchElementException("Data is Not Found");
         }
-        postRepository.findById(post.getId()).map(post1 -> {
+         return postRepository.findById(id).map(post1 -> {
             post1.setTitle(post.getTitle());
             post1.setBody(post.getBody());
+            post1.addTag(post.getTags());
             return postRepository.save(post1);
         }).orElseThrow(() -> new IllegalStateException("Update Operation Failed"));
-
+        //return updatedPost;
     }
 
     public void deletePostById(Long id){
